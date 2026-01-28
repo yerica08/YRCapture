@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline';"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>YRcapture 실행창</title>
+    <link rel="stylesheet" href="launcher.css" />
+  </head>
+  <body>
+    <div class="launcher" id="launcher">
+      <div class="tool-group">
+        <button class="tool" data-action="region">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 9V5h4"></path>
+              <path d="M19 15v4h-4"></path>
+            </svg>
+          </span>
+          <span class="label">직접지정</span>
+        </button>
+        <button class="tool" data-action="window">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+              <path d="M3 9h18"></path>
+              <circle cx="6.5" cy="7" r="0.8"></circle>
+              <circle cx="9" cy="7" r="0.8"></circle>
+            </svg>
+          </span>
+          <span class="label">창</span>
+        </button>
+        <button class="tool" data-action="full">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9V4h5"></path>
+              <path d="M20 9V4h-5"></path>
+              <path d="M4 15v5h5"></path>
+              <path d="M20 15v5h-5"></path>
+              <rect x="7" y="7" width="10" height="10" rx="2"></rect>
+            </svg>
+          </span>
+          <span class="label">전체화면</span>
+        </button>
+        <button class="tool" data-action="scroll" title="웹페이지 캡처">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 4v16"></path>
+              <path d="M8 8l4-4 4 4"></path>
+              <path d="M8 16l4 4 4-4"></path>
+            </svg>
+          </span>
+          <span class="label">웹페이지</span>
+        </button>
+      </div>
+      <div class="divider"></div>
+      <button class="tool" id="previewButton" data-action="preview" aria-label="결과창">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="4" y="5" width="16" height="14" rx="2"></rect>
+            <path d="M4 9h16"></path>
+            <path d="M8 13h8"></path>
+          </svg>
+        </span>
+        <span class="label">결과창</span>
+      </button>
+      <button class="tool" id="settingsButton" data-action="settings" aria-label="설정">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.3 1a7 7 0 0 0-1.7-1L14.5 2h-5L9 5a7 7 0 0 0-1.7 1l-2.3-1-2 3.5 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.3-1a7 7 0 0 0 1.7 1l.5 3h5l.5-3a7 7 0 0 0 1.7-1l2.3 1 2-3.5-2-1.5c.1-.3.1-.7.1-1z"></path>
+          </svg>
+        </span>
+        <span class="label">설정</span>
+      </button>
+      <button class="menu-button" id="menuButton" aria-label="메뉴">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="6" cy="12" r="1.6"></circle>
+            <circle cx="12" cy="12" r="1.6"></circle>
+            <circle cx="18" cy="12" r="1.6"></circle>
+          </svg>
+        </span>
+        <span class="label">메뉴</span>
+      </button>
+      <div class="window-controls" aria-label="Window controls">
+        <button
+          class="window-control"
+          id="minimizeButton"
+          type="button"
+          aria-label="Minimize"
+          title="Minimize"
+        >
+          <span class="icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 12h12"></path>
+            </svg>
+          </span>
+        </button>
+        <button
+          class="window-control danger"
+          id="closeButton"
+          type="button"
+          aria-label="Close"
+          title="Close"
+        >
+          <span class="icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12"></path>
+              <path d="M18 6l-12 12"></path>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <script src="launcher.js"></script>
+  </body>
+</html>

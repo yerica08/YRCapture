@@ -1,0 +1,45 @@
+:root {
+  color-scheme: light;
+  --overlay-tint: rgba(6, 10, 16, 0.35);
+  --accent: #2ec6ff;
+  --accent-soft: rgba(46, 198, 255, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--overlay-tint);
+  cursor: crosshair;
+}
+
+#selection {
+  position: absolute;
+  border: 2px solid var(--accent);
+  background: var(--accent-soft);
+  display: none;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+}
+
+#size {
+  position: absolute;
+  top: -28px;
+  left: 0;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-family: "Segoe UI", "Pretendard", "Malgun Gothic", sans-serif;
+  color: #fefefe;
+  background: rgba(8, 12, 18, 0.85);
+  border-radius: 6px;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}

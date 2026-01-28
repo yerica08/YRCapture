@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline';"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>YRcapture 설정</title>
+    <link rel="stylesheet" href="settings.css" />
+  </head>
+  <body>
+    <div class="settings-shell">
+      <header>
+        <h1>설정</h1>
+        <p>단축키와 캡처 동작을 변경합니다.</p>
+      </header>
+
+      <section class="panel">
+        <h2>단축키</h2>
+        <div class="field">
+          <label for="fullShortcut">전체 화면 캡처</label>
+          <input id="fullShortcut" type="text" placeholder="Ctrl+Shift+1" />
+        </div>
+        <div class="field">
+          <label for="windowShortcut">창 캡처</label>
+          <input id="windowShortcut" type="text" placeholder="Ctrl+Shift+2" />
+        </div>
+        <div class="field">
+          <label for="regionShortcut">영역 캡처</label>
+          <input id="regionShortcut" type="text" placeholder="Ctrl+Shift+3" />
+        </div>
+        <div class="field">
+          <label for="quickShortcut">퀵 캡처</label>
+          <input id="quickShortcut" type="text" placeholder="Ctrl+Shift+4" />
+        </div>
+        <div class="field">
+          <label for="quickMode">퀵 캡처 방식</label>
+          <select id="quickMode">
+            <option value="region">직접 지정</option>
+            <option value="window">창</option>
+            <option value="full">전체 화면</option>
+          </select>
+        </div>
+        <div class="hint">
+          예시: <code>Ctrl+Shift+1</code>, <code>Alt+Shift+S</code>, <code>Ctrl+Alt+3</code>,
+          <code>PrintScreen</code>
+        </div>
+      </section>
+
+      <footer>
+        <span id="status" class="status">저장되지 않음</span>
+        <div class="actions">
+          <button id="resetButton" class="secondary">초기화</button>
+          <button id="closeButton" class="secondary">닫기</button>
+          <button id="saveButton">저장</button>
+        </div>
+      </footer>
+    </div>
+    <script src="settings.js"></script>
+  </body>
+</html>

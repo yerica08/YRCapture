@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline';"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>YRcapture 메뉴</title>
+    <link rel="stylesheet" href="menu.css" />
+  </head>
+  <body>
+    <div class="menu-panel">
+      <label class="menu-item">
+        <input type="checkbox" id="toggleLauncher" />
+        <span>캡처 실행창 보기</span>
+      </label>
+      <label class="menu-item">
+        <input type="checkbox" id="toggleCopy" />
+        <span>자동 복사</span>
+      </label>
+      <button class="menu-action" id="openFolder">저장 폴더 열기</button>
+      <button class="menu-action" id="hideLauncher">실행창 숨기기</button>
+      <button class="menu-action danger" id="quitApp">백그라운드 종료</button>
+    </div>
+    <script src="menu.js"></script>
+  </body>
+</html>
