@@ -15,8 +15,27 @@
 
 ## 설치 및 실행
 
+### 1. 개발환경 : Node.js 설치
+
+Electron은 Node.js가 필요하다.  
+1. [Node.js 공식 사이트](https://nodejs.org/ko)에 접속  
+2. LTS (Long Term Support) 버전을 다운로드 후 설치  
+3. 설치 후, 터미널(명령 프롬프트)에 아래 명령어 입력해서 설치 확인:  
+
+### 2. 현재 폴더 저장 : 클론파일 만들기
+
+[새로운 컴퓨터에 클론 파일 만드는 방법](https://yerica.tistory.com/136)을 통해 현재 YRcapture를 저장
+
+### 3.  Electron 설치
+
 ```bash
-npm install
+npm init -y
+npm install electron --save-dev
+```
+
+### 4.  실행
+
+```bash
 npm start
 ```
 

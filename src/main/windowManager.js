@@ -24,8 +24,9 @@ let settingsHooks = {
 };
 
 function buildWindowOptions() {
+  const iconFilename = process.platform === 'win32' ? 'logo.ico' : 'logo.png';
   return {
-    icon: path.join(__dirname, '..', 'img', 'logo.png'),
+    icon: path.join(__dirname, '..', 'img', iconFilename),
     webPreferences: {
       preload: path.join(__dirname, '..', 'preload', 'preload.js'),
       contextIsolation: true,

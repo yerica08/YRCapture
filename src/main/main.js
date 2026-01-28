@@ -1,4 +1,4 @@
-const { app, ipcMain, clipboard, dialog, screen, shell, nativeImage, BrowserWindow } = require('electron');
+const { app, ipcMain, clipboard, dialog, screen, shell, nativeImage, BrowserWindow, session } = require('electron');
 const fs = require('fs');
 const path = require('path');
 
@@ -14,6 +14,82 @@ const MAX_RECENTS = 12;
 let currentPreviewIndex = 0;
 let regionCaptureUiState = null;
 let settingsOpen = false;
+const WEB_CAPTURE_PARTITION = 'web-capture';
+let webCaptureSessionReady = false;
+
+function ensureWebCaptureSession() {
+  const webCaptureSession = session.fromPartition(WEB_CAPTURE_PARTITION);
+  if (!webCaptureSessionReady) {
+    webCaptureSession.setPermissionRequestHandler((_webContents, _permission, callback) => {
+      callback(false);
+    });
+    if (typeof webCaptureSession.setPermissionCheckHandler === 'function') {
+      webCaptureSession.setPermissionCheckHandler(() => false);
+    }
+    webCaptureSessionReady = true;
+  }
+  return webCaptureSession;
+}
+
+function sanitizeSettingsPatch(patch) {
+  if (!patch || typeof patch !== 'object') {
+    return {};
+  }
+  const sanitized = {};
+  if (typeof patch.autoCopy === 'boolean') {
+    sanitized.autoCopy = patch.autoCopy;
+  }
+  if (typeof patch.autoSave === 'boolean') {
+    sanitized.autoSave = patch.autoSave;
+  }
+  if (typeof patch.showLauncher === 'boolean') {
+    sanitized.showLauncher = patch.showLauncher;
+  }
+  if (typeof patch.saveFolder === 'string' && patch.saveFolder.trim()) {
+    sanitized.saveFolder = patch.saveFolder.trim();
+  }
+  if (patch.format === 'png' || patch.format === 'jpg') {
+    sanitized.format = patch.format;
+  }
+  if (Number.isFinite(patch.jpegQuality)) {
+    const quality = Math.max(10, Math.min(100, Math.round(patch.jpegQuality)));
+    sanitized.jpegQuality = quality;
+  }
+  if (patch.shortcuts && typeof patch.shortcuts === 'object') {
+    const shortcuts = {};
+    const sanitizeShortcutValue = (value) => {
+      if (typeof value !== 'string') {
+        return undefined;
+      }
+      const trimmed = value.trim();
+      if (trimmed.length > 64) {
+        return undefined;
+      }
+      return trimmed;
+    };
+
+    const full = sanitizeShortcutValue(patch.shortcuts.full);
+    const window = sanitizeShortcutValue(patch.shortcuts.window);
+    const region = sanitizeShortcutValue(patch.shortcuts.region);
+    const quick = sanitizeShortcutValue(patch.shortcuts.quick);
+    if (full !== undefined) shortcuts.full = full;
+    if (window !== undefined) shortcuts.window = window;
+    if (region !== undefined) shortcuts.region = region;
+    if (quick !== undefined) shortcuts.quick = quick;
+
+    if (typeof patch.shortcuts.quickMode === 'string') {
+      const mode = patch.shortcuts.quickMode.trim();
+      if (mode === 'region' || mode === 'window' || mode === 'full') {
+        shortcuts.quickMode = mode;
+      }
+    }
+
+    if (Object.keys(shortcuts).length > 0) {
+      sanitized.shortcuts = shortcuts;
+    }
+  }
+  return sanitized;
+}
 
 function stashRegionCaptureUi() {
   regionCaptureUiState = {
@@ -198,12 +274,16 @@ async function startWebCapture(rawUrl) {
     targetUrl = `https://${targetUrl}`;
   }
 
+  ensureWebCaptureSession();
   const captureWindow = new BrowserWindow({
     show: false,
     width: 1280,
     height: 720,
     webPreferences: {
-      sandbox: false,
+      sandbox: true,
+      contextIsolation: true,
+      nodeIntegration: false,
+      partition: WEB_CAPTURE_PARTITION,
     },
   });
 
@@ -222,6 +302,7 @@ async function startWebCapture(rawUrl) {
   await captureService.delay(300);
 
   const { webContents } = captureWindow;
+  webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   const debuggerSession = webContents.debugger;
   let attached = false;
   try {
@@ -484,9 +565,13 @@ function registerIpcHandlers() {
   ipcMain.handle('launcher:getSettings', () => storage.getSettings());
 
   ipcMain.handle('launcher:updateSettings', (_event, patch) => {
-    storage.updateSettings(patch);
+    const sanitizedPatch = sanitizeSettingsPatch(patch);
+    if (!Object.keys(sanitizedPatch).length) {
+      return storage.getSettings();
+    }
+    storage.updateSettings(sanitizedPatch);
     const settings = storage.getSettings();
-    if (Object.prototype.hasOwnProperty.call(patch, 'showLauncher')) {
+    if (Object.prototype.hasOwnProperty.call(sanitizedPatch, 'showLauncher')) {
       if (settings.showLauncher) {
         windowManager.showLauncher();
       } else {
@@ -534,9 +619,13 @@ function registerIpcHandlers() {
 
   ipcMain.handle('menu:getSettings', () => storage.getSettings());
   ipcMain.handle('menu:updateSettings', (_event, patch) => {
-    storage.updateSettings(patch);
+    const sanitizedPatch = sanitizeSettingsPatch(patch);
+    if (!Object.keys(sanitizedPatch).length) {
+      return storage.getSettings();
+    }
+    storage.updateSettings(sanitizedPatch);
     const settings = storage.getSettings();
-    if (Object.prototype.hasOwnProperty.call(patch, 'showLauncher')) {
+    if (Object.prototype.hasOwnProperty.call(sanitizedPatch, 'showLauncher')) {
       if (settings.showLauncher) {
         windowManager.showLauncher();
       } else {
@@ -557,9 +646,13 @@ function registerIpcHandlers() {
 
   ipcMain.handle('settings:get', () => storage.getSettings());
   ipcMain.handle('settings:update', (_event, patch) => {
-    storage.updateSettings(patch);
+    const sanitizedPatch = sanitizeSettingsPatch(patch);
+    if (!Object.keys(sanitizedPatch).length) {
+      return storage.getSettings();
+    }
+    storage.updateSettings(sanitizedPatch);
     const settings = storage.getSettings();
-    if (patch?.shortcuts) {
+    if (sanitizedPatch?.shortcuts) {
       if (!settingsOpen) {
         registerShortcuts();
       }
